@@ -1,12 +1,12 @@
 /** Minimal external store compatible with React's `useSyncExternalStore`. */
 export interface Store<T> {
-  getSnapshot(): T;
-  subscribe(listener: () => void): () => void;
+  getSnapshot: () => T;
+  subscribe: (listener: () => void) => () => void;
 }
 
 export interface WritableStore<T> extends Store<T> {
-  set(next: T): void;
-  update(fn: (current: T) => T): void;
+  set: (next: T) => void;
+  update: (fn: (current: T) => T) => void;
 }
 
 export function createStore<T>(initial: T): WritableStore<T> {

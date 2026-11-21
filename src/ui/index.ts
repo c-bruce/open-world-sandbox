@@ -1,1 +1,2 @@
-export { App, type FatalError } from './App';
+export { App } from './App';
+export type { FatalError } from './FatalScreen';

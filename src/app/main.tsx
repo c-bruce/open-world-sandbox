@@ -17,11 +17,12 @@ const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Missing #root element');
 const root = createRoot(rootElement);
 const canvas = document.createElement('canvas');
+let engine: Engine | null = null;
 
 function render(error?: FatalError) {
   root.render(
     <StrictMode>
-      <App canvas={canvas} error={error} />
+      <App canvas={canvas} engine={engine} error={error} />
     </StrictMode>,
   );
 }
@@ -34,19 +35,25 @@ try {
       console.error(message);
     },
     onDeviceLost: (message) => {
-      render({ title: 'GPU device lost', message });
+      engine?.stop();
+      render({ kind: 'error', title: 'GPU device lost', message });
     },
   });
-  await start(gpu);
+  engine = await start(gpu);
+  render();
 } catch (err) {
   render(
     err instanceof WebGpuUnsupportedError
-      ? { title: 'WebGPU unavailable', message: `${err.message} Try a current Chrome or Edge.` }
-      : { title: 'Failed to start', message: err instanceof Error ? err.message : String(err) },
+      ? { kind: 'unsupported', title: 'WebGPU unavailable', message: err.message }
+      : {
+          kind: 'error',
+          title: 'Failed to start',
+          message: err instanceof Error ? err.message : String(err),
+        },
   );
 }
 
-async function start(gpu: GpuContext) {
+async function start(gpu: GpuContext): Promise<Engine> {
   const api = createGpuApi(gpu.device);
   const profiler = new GpuProfiler(api.memory, gpu.hasTimestampQuery);
   let renderer: Renderer | null = null;
@@ -55,15 +62,9 @@ async function start(gpu: GpuContext) {
   // The canvas may have resized while pipelines were compiling.
   renderer.resize(sizer.current());
 
-  const engine = new Engine({
-    gpu,
-    api,
-    profiler,
-    renderer,
-    canvas,
-    registry,
-  });
+  const engine = new Engine({ gpu, api, profiler, renderer, canvas, registry });
   engine.start();
   // Dev-only console handle for inspecting stores and metrics.
   if (import.meta.env.DEV) Object.assign(window, { engine });
+  return engine;
 }

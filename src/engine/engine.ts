@@ -223,7 +223,8 @@ export class Engine {
     profiler.beginFrame();
     const encoder = device.createCommandEncoder({ label: 'frame' });
 
-    if (sim && plan.substeps > 0) {
+    // Opened even with zero substeps so the `sim` timing row stays continuous.
+    if (sim) {
       const pass = encoder.beginComputePass({
         label: 'sim',
         timestampWrites: profiler.timestampWrites('sim'),
