@@ -134,6 +134,12 @@ export class Engine {
     }
   }
 
+  /** Switch to `id` (or reload it) starting from `params`. */
+  setSim<Id extends SimId>(id: Id, params: SimParamsFor<Id>): void {
+    this.paramsStore.update((s) => ({ ...s, app: { ...s.app, sim: id }, sim: params }));
+    void this.loadSim(id, params);
+  }
+
   setScene(scene: SceneParams): void {
     this.paramsStore.update((s) => ({ ...s, scene }));
   }
