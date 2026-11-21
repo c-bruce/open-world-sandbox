@@ -11,7 +11,7 @@ import {
 } from '../gpu';
 import { Renderer } from '../renderer';
 import { App, type FatalError } from '../ui';
-import { createNoopSim } from './noop-sim';
+import { registry } from './registry';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Missing #root element');
@@ -61,7 +61,7 @@ async function start(gpu: GpuContext) {
     profiler,
     renderer,
     canvas,
-    registry: { hello: createNoopSim },
+    registry,
   });
   engine.start();
   // Dev-only console handle for inspecting stores and metrics.
