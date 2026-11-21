@@ -20,7 +20,7 @@ describe('defaults', () => {
 
   it('scene defaults fill nested groups', () => {
     const scene = defaultSceneParams();
-    expect(scene.sun.elevation).toBe(8);
+    expect(scene.sun.elevation).toBe(10);
     expect(scene.camera.target).toEqual({ x: 0, y: 0.5, z: 0 });
     expect(parseSceneParams(scene)).toEqual({ ok: true, value: scene });
   });

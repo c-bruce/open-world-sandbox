@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 const sun = z.object({
-  azimuth: z.number().min(0).max(360).default(250).meta({ label: 'Sun azimuth (°)', step: 1 }),
-  elevation: z.number().min(-5).max(90).default(8).meta({ label: 'Sun elevation (°)', step: 0.5 }),
+  azimuth: z.number().min(0).max(360).default(300).meta({ label: 'Sun azimuth (°)', step: 1 }),
+  elevation: z.number().min(-5).max(90).default(10).meta({ label: 'Sun elevation (°)', step: 0.5 }),
   intensity: z.number().min(0).max(20).default(4).meta({ label: 'Sun intensity', step: 0.1 }),
 });
 
 const sky = z.object({
-  turbidity: z.number().min(1.7).max(10).default(3).meta({ label: 'Sky turbidity', step: 0.1 }),
+  turbidity: z.number().min(1.7).max(10).default(2.5).meta({ label: 'Sky turbidity', step: 0.1 }),
 });
 
 const grid = z.object({
@@ -34,7 +34,7 @@ const camera = z.object({
     .meta({ label: 'Target (m)' }),
   distance: z.number().min(1).max(200).default(12).meta({ label: 'Distance (m)', step: 0.5 }),
   yaw: z.number().min(-180).max(180).default(35).meta({ label: 'Yaw (°)', step: 1 }),
-  pitch: z.number().min(1).max(89).default(20).meta({ label: 'Pitch (°)', step: 1 }),
+  pitch: z.number().min(1).max(89).default(12).meta({ label: 'Pitch (°)', step: 1 }),
   fov: z.number().min(20).max(120).default(50).meta({ label: 'Field of view (°)', step: 1 }),
 });
 

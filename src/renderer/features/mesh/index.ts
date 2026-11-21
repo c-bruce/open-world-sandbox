@@ -1,1 +1,1 @@
-export {};
+export { MeshFeature } from './mesh';

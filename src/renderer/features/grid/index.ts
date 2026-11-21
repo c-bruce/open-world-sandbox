@@ -1,1 +1,1 @@
-export {};
+export { createGridPipeline } from './grid';
