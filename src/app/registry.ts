@@ -1,6 +1,6 @@
 import type { SimRegistry } from '../engine';
-import { createHelloSim } from '../sims/hello';
+import { createBouncingBallSim } from '../sims/bouncing-ball';
 
 export const registry = {
-  hello: createHelloSim,
+  'bouncing-ball': createBouncingBallSim,
 } satisfies SimRegistry;

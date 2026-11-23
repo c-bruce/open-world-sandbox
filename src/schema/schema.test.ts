@@ -39,8 +39,8 @@ describe('defaults', () => {
 
 describe('validation', () => {
   it('rejects out-of-range sim params', () => {
-    expect(parseSimParams('hello', { restitution: 1.5 }).ok).toBe(false);
-    expect(parseSimParams('hello', { radius: 0 }).ok).toBe(false);
+    expect(parseSimParams('bouncing-ball', { restitution: 1.5 }).ok).toBe(false);
+    expect(parseSimParams('bouncing-ball', { radius: 0 }).ok).toBe(false);
   });
 
   it('rejects out-of-range scene params', () => {
@@ -54,7 +54,7 @@ describe('validation', () => {
   });
 
   it('returns a readable error message', () => {
-    const result = parseSimParams('hello', { gravity: -1 });
+    const result = parseSimParams('bouncing-ball', { gravity: -1 });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toMatch(/gravity/);
   });
@@ -62,7 +62,7 @@ describe('validation', () => {
 
 describe('JSON Schema', () => {
   it('includes min/max, defaults and labels for sim params', () => {
-    const radius = simParamsJsonSchema('hello').properties?.radius;
+    const radius = simParamsJsonSchema('bouncing-ball').properties?.radius;
     expect(radius).toMatchObject({
       type: 'number',
       minimum: 0.05,

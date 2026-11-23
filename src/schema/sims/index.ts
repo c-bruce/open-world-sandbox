@@ -1,9 +1,9 @@
 import type { z } from 'zod';
-import { helloParamsSchema } from './hello';
+import { bouncingBallParamsSchema } from './bouncing-ball';
 
 /** One params schema per sim; adding a key here adds a `SimId`. */
 export const simSchemas = {
-  hello: helloParamsSchema,
+  'bouncing-ball': bouncingBallParamsSchema,
 } as const;
 
 export type SimId = keyof typeof simSchemas;

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const helloParamsSchema = z.object({
+export const bouncingBallParamsSchema = z.object({
   radius: z.number().min(0.05).max(2).default(0.5).meta({ label: 'Radius (m)', step: 0.05 }),
   dropHeight: z.number().min(0.5).max(50).default(5).meta({ label: 'Drop height (m)', step: 0.5 }),
   gravity: z.number().min(0).max(30).default(9.81).meta({ label: 'Gravity (m/s²)', step: 0.01 }),

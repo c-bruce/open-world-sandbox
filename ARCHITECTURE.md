@@ -241,9 +241,9 @@ how, and in which passes.
 The renderer caches GPU resources per `Renderable` object and frees an entry once it stops
 appearing in the list. Return the same objects every frame; mutating them in place is fine.
 
-### Worked example: `hello`
+### Worked example: `bouncing-ball`
 
-[`src/sims/hello/`](src/sims/hello/) drops a single bouncing ball, and uses every part of the
+[`src/sims/bouncing-ball/`](src/sims/bouncing-ball/) drops a single ball that bounces to rest, and uses every part of the
 contract.
 
 ```mermaid

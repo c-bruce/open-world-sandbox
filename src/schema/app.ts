@@ -4,7 +4,7 @@ import { simIdList, type SimId } from './sims';
 export const appParamsSchema = z.object({
   sim: z
     .enum(simIdList as [SimId, ...SimId[]])
-    .default('hello')
+    .default('bouncing-ball')
     .meta({ label: 'Simulation' }),
   paused: z.boolean().default(false).meta({ label: 'Paused' }),
   timeScale: z.number().min(0).max(4).default(1).meta({ label: 'Time scale', step: 0.05 }),

@@ -2,9 +2,9 @@ import type { SimContext, Simulation } from '../../engine';
 import type { UniformBuffer } from '../../gpu';
 import type { Bounds, Renderable } from '../../renderer';
 import type { SimParamsFor } from '../../schema';
-import helloWgsl from './hello.wgsl?raw';
+import bouncingBallWgsl from './bouncing-ball.wgsl?raw';
 
-type HelloParams = SimParamsFor<'hello'>;
+type BouncingBallParams = SimParamsFor<'bouncing-ball'>;
 
 const BALL_COUNT = 1;
 const WORKGROUP_SIZE = 64;
@@ -23,7 +23,7 @@ interface Resources {
 }
 
 /** Conservative world bounds: drop height vertically, drag-limited travel along x. */
-export function helloBounds(params: HelloParams): Bounds {
+export function bouncingBallBounds(params: BouncingBallParams): Bounds {
   const r = params.radius;
   const travel =
     params.drag > 0
@@ -36,16 +36,16 @@ export function helloBounds(params: HelloParams): Bounds {
   };
 }
 
-class HelloSim implements Simulation<HelloParams> {
+class BouncingBallSim implements Simulation<BouncingBallParams> {
   private res: Resources | null = null;
-  private params: HelloParams | null = null;
+  private params: BouncingBallParams | null = null;
   private dt = 0;
 
-  async init(ctx: SimContext, params: HelloParams): Promise<void> {
+  async init(ctx: SimContext, params: BouncingBallParams): Promise<void> {
     const { gpu } = ctx;
-    const module = await gpu.createShaderModule('hello', helloWgsl);
+    const module = await gpu.createShaderModule('bouncing-ball', bouncingBallWgsl);
     const layout = ctx.device.createBindGroupLayout({
-      label: 'hello-bind-group-layout',
+      label: 'bouncing-ball-bind-group-layout',
       entries: [0, 1, 2].map((binding) => ({
         binding,
         visibility: GPUShaderStage.COMPUTE,
@@ -53,24 +53,32 @@ class HelloSim implements Simulation<HelloParams> {
       })),
     });
     const pipelineLayout = ctx.device.createPipelineLayout({
-      label: 'hello-layout',
+      label: 'bouncing-ball-layout',
       bindGroupLayouts: [layout],
     });
     const [stepPipeline, projectPipeline] = await Promise.all(
       ['step', 'project'].map((entryPoint) =>
         gpu.createComputePipeline({
-          label: `hello-${entryPoint}`,
+          label: `bouncing-ball-${entryPoint}`,
           layout: pipelineLayout,
           compute: { module, entryPoint },
         }),
       ),
     );
     const usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
-    const posRadius = gpu.createBuffer({ label: 'hello-pos-radius', size: BALL_COUNT * 16, usage });
-    const velocity = gpu.createBuffer({ label: 'hello-velocity', size: BALL_COUNT * 16, usage });
-    const uniforms = gpu.createUniformBuffer('hello-params', 32);
+    const posRadius = gpu.createBuffer({
+      label: 'bouncing-ball-pos-radius',
+      size: BALL_COUNT * 16,
+      usage,
+    });
+    const velocity = gpu.createBuffer({
+      label: 'bouncing-ball-velocity',
+      size: BALL_COUNT * 16,
+      usage,
+    });
+    const uniforms = gpu.createUniformBuffer('bouncing-ball-params', 32);
     const bindGroup = ctx.device.createBindGroup({
-      label: 'hello-bind-group',
+      label: 'bouncing-ball-bind-group',
       layout,
       entries: [
         { binding: 0, resource: { buffer: posRadius } },
@@ -79,7 +87,7 @@ class HelloSim implements Simulation<HelloParams> {
       ],
     });
     const renderable: Renderable = {
-      label: 'hello-ball',
+      label: 'bouncing-ball',
       mesh: ctx.meshes.sphere,
       material: { kind: 'lit', color: [0.75, 0.12, 0.08], roughness: 0.35 },
       instances: {
@@ -87,7 +95,7 @@ class HelloSim implements Simulation<HelloParams> {
         buffer: posRadius,
         count: BALL_COUNT,
         layout: 'posRadius',
-        bounds: helloBounds(params),
+        bounds: bouncingBallBounds(params),
       },
       castsShadow: true,
       receivesShadow: true,
@@ -106,17 +114,20 @@ class HelloSim implements Simulation<HelloParams> {
     this.reset();
   }
 
-  setParams(params: HelloParams): void {
+  setParams(params: BouncingBallParams): void {
     this.params = params;
     const { res } = this;
     if (!res) return;
     this.writeUniforms(res, params);
     if (res.renderable.instances.kind === 'storage') {
-      res.renderable.instances = { ...res.renderable.instances, bounds: helloBounds(params) };
+      res.renderable.instances = {
+        ...res.renderable.instances,
+        bounds: bouncingBallBounds(params),
+      };
     }
     // Re-apply radius and ground contact now, so edits show even while paused.
-    const encoder = res.ctx.device.createCommandEncoder({ label: 'hello-project' });
-    const pass = encoder.beginComputePass({ label: 'hello-project' });
+    const encoder = res.ctx.device.createCommandEncoder({ label: 'bouncing-ball-project' });
+    const pass = encoder.beginComputePass({ label: 'bouncing-ball-project' });
     this.dispatch(pass, res.projectPipeline, res);
     pass.end();
     res.ctx.device.queue.submit([encoder.finish()]);
@@ -168,13 +179,13 @@ class HelloSim implements Simulation<HelloParams> {
     pass.dispatchWorkgroups(Math.ceil(BALL_COUNT / WORKGROUP_SIZE));
   }
 
-  private writeUniforms(res: Resources, params: HelloParams): void {
+  private writeUniforms(res: Resources, params: BouncingBallParams): void {
     res.uniforms.f32.set([params.gravity, params.restitution, params.drag, this.dt, params.radius]);
     res.uniforms.u32[5] = BALL_COUNT;
     res.uniforms.upload();
   }
 }
 
-export function createHelloSim(): Simulation<HelloParams> {
-  return new HelloSim();
+export function createBouncingBallSim(): Simulation<BouncingBallParams> {
+  return new BouncingBallSim();
 }
