@@ -1,3 +1,4 @@
+/** Replaces the UI when the app can't run: `unsupported` (no WebGPU) or `error` (startup failure, device lost). */
 export interface FatalError {
   kind: 'unsupported' | 'error';
   title: string;

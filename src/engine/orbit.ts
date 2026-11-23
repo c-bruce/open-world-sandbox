@@ -3,6 +3,7 @@ import type { SceneParams } from '../schema';
 type Camera = SceneParams['camera'];
 type Range = readonly [number, number];
 
+/** Clamp ranges for camera distance (m) and pitch (degrees), read from the scene schema. */
 export interface OrbitRanges {
   distance: Range;
   pitch: Range;

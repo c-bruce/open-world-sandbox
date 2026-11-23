@@ -1,6 +1,7 @@
 import { alignTo } from './bytes';
 import type { MemoryTracker } from './memory';
 
+/** Create a tracked buffer and upload `data`; adds COPY_DST and pads the size to 4 bytes. */
 export function createBufferWithData(
   memory: MemoryTracker,
   label: string,

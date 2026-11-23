@@ -1,3 +1,4 @@
+/** Canvas backing-store size in device pixels. */
 export interface CanvasSize {
   width: number;
   height: number;

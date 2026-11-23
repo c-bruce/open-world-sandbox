@@ -3,6 +3,7 @@ export const MAX_FRAME_SECONDS = 0.25;
 /** Upper bound on fixed steps per frame; any further backlog is dropped. */
 export const MAX_STEPS_PER_FRAME = 8;
 
+/** The subset of `AppParams` the timestep reads. */
 export interface TimestepSettings {
   fixedTimestep: number;
   substeps: number;
@@ -10,6 +11,7 @@ export interface TimestepSettings {
   paused: boolean;
 }
 
+/** What to run this frame: `substeps` calls to `sim.step(substepDt, pass)`. */
 export interface StepPlan {
   fixedSteps: number;
   substeps: number;

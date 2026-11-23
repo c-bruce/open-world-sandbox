@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import { helloParamsSchema } from './hello';
 
+/** One params schema per sim; adding a key here adds a `SimId`. */
 export const simSchemas = {
   hello: helloParamsSchema,
 } as const;

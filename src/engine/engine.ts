@@ -20,18 +20,22 @@ import { FixedTimestep } from './timestep';
 
 const METRICS_PUBLISH_MS = 250;
 
+/** Every user-tweakable value. Treated as immutable: writers replace it, readers compare by reference. */
 export interface ParamsState {
   app: AppParams;
   scene: SceneParams;
   sim: SimParamsFor<SimId>;
 }
 
+/** Load state of the current sim. */
 export interface SimStatus {
   id: SimId;
   loading: boolean;
+  /** Message from a failed `init`, or null. */
   error: string | null;
 }
 
+/** Everything the engine needs; built by app/main.tsx. */
 export interface EngineOptions {
   gpu: GpuContext;
   api: GpuApi;
@@ -106,6 +110,7 @@ export class Engine {
     void this.loadSim(app.sim, this.paramsStore.getSnapshot().sim);
   }
 
+  /** Begin the requestAnimationFrame loop (idempotent). */
   start(): void {
     if (this.rafId) return;
     const frame = (now: number) => {
@@ -115,12 +120,14 @@ export class Engine {
     this.rafId = requestAnimationFrame(frame);
   }
 
+  /** Pause the frame loop; the sim and its resources are kept. */
   stop(): void {
     cancelAnimationFrame(this.rafId);
     this.rafId = 0;
     this.lastFrameTime = null;
   }
 
+  /** Replace app params. Changing `app.sim` loads that sim with its default params. */
   setApp(app: AppParams): void {
     const previous = this.paramsStore.getSnapshot();
     // Compared as strings: SimId can be a single literal type.
@@ -140,10 +147,12 @@ export class Engine {
     void this.loadSim(id, params);
   }
 
+  /** Replace scene params; used from the next frame. */
   setScene(scene: SceneParams): void {
     this.paramsStore.update((s) => ({ ...s, scene }));
   }
 
+  /** Replace the current sim's params; `sim.setParams` runs at the start of the next frame. */
   setSimParams(sim: SimParamsFor<SimId>): void {
     this.paramsStore.update((s) => ({ ...s, sim }));
   }
@@ -153,6 +162,7 @@ export class Engine {
     this.timestep.requestStep();
   }
 
+  /** Restart the current sim from its initial state and zero the sim clock. */
   reset(): void {
     this.sim?.reset();
     this.simTime = 0;
@@ -165,6 +175,7 @@ export class Engine {
     return this.loadSim(app.sim, sim);
   }
 
+  /** Stop the loop, detach input handlers and dispose the sim. */
   dispose(): void {
     this.stop();
     this.detachControls();

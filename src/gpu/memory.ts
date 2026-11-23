@@ -1,5 +1,6 @@
 import { extent3d, textureByteSize } from './bytes';
 
+/** Bytes of live tracked resources, in total and summed per label. */
 export interface MemorySnapshot {
   totalBytes: number;
   byLabel: ReadonlyMap<string, number>;

@@ -4,9 +4,12 @@ import { sceneParamsSchema } from './scene';
 import { simIdList, simSchemas, type SimId, type SimParamsFor } from './sims';
 
 export type { SimId, SimParamsFor };
+/** Shared environment: sun, sky, exposure, grid and camera. */
 export type SceneParams = z.output<typeof sceneParamsSchema>;
+/** App-level settings: current sim, transport and overlay. */
 export type AppParams = z.output<typeof appParamsSchema>;
 
+/** Result of validating untrusted input (UI edits, URL params). */
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; error: string };
 
 /** Plain JSON Schema (draft 2020-12) with this project's `label`/`step` metadata. */
@@ -41,10 +44,12 @@ function jsonSchemaOf(schema: z.ZodType): JsonSchema {
   return z.toJSONSchema(schema, { io: 'input' }) as JsonSchema;
 }
 
+/** Registered sim ids, in declaration order; routing falls back to the first. */
 export function simIds(): readonly SimId[] {
   return simIdList;
 }
 
+/** Validate `input` against sim `id`'s schema, filling missing fields with defaults. */
 export function parseSimParams<Id extends SimId>(
   id: Id,
   input: unknown,
@@ -52,10 +57,12 @@ export function parseSimParams<Id extends SimId>(
   return parseWith(typedSimSchemas[id], input);
 }
 
+/** Every field of sim `id` at its default. */
 export function defaultSimParams<Id extends SimId>(id: Id): SimParamsFor<Id> {
   return defaultsOf(typedSimSchemas[id]);
 }
 
+/** JSON Schema of sim `id`'s params; the UI builds its controls from this. */
 export function simParamsJsonSchema(id: SimId): JsonSchema {
   return jsonSchemaOf(typedSimSchemas[id]);
 }

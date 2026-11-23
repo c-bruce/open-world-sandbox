@@ -8,8 +8,11 @@ import { SidePanel } from './SidePanel';
 import './styles.css';
 
 interface AppProps {
+  /** Created before the GPU is ready; App mounts it into the viewport. */
   canvas: HTMLCanvasElement;
+  /** Null until startup finishes; only the canvas is shown until then. */
   engine: Engine | null;
+  /** When set, shown instead of the panel and overlay. */
   error?: FatalError;
 }
 

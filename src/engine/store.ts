@@ -4,6 +4,7 @@ export interface Store<T> {
   subscribe: (listener: () => void) => () => void;
 }
 
+/** Owner-side view of a store; `set` notifies only when the value changes by `Object.is`. */
 export interface WritableStore<T> extends Store<T> {
   set: (next: T) => void;
   update: (fn: (current: T) => T) => void;

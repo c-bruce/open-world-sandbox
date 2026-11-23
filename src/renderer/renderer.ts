@@ -15,6 +15,7 @@ import { createLayouts, DEPTH_FORMAT, HDR_FORMAT, type Layouts } from './layouts
 import { createMeshLibrary, destroyMesh } from './meshes';
 import type { MeshLibrary, Renderable, RenderStats } from './types';
 
+/** Everything one frame of rendering depends on. */
 export interface RenderInput {
   scene: SceneParams;
   renderables: readonly Renderable[];
@@ -89,6 +90,7 @@ export class Renderer {
     this.targets = this.createTargets(deps.size);
   }
 
+  /** Compiles every pipeline in parallel; call `resize` afterwards if the canvas may have changed. */
   static async create(
     gpu: GpuContext,
     api: GpuApi,
@@ -105,6 +107,7 @@ export class Renderer {
     return new Renderer({ gpu, api, profiler, size }, { layouts, mesh, grid, sky, tonemap });
   }
 
+  /** Recreate the size-dependent HDR and depth targets (no-op if unchanged). */
   resize(size: CanvasSize): void {
     if (size.width === this.size.width && size.height === this.size.height) return;
     this.destroyTargets();

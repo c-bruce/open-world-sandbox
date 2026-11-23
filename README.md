@@ -74,12 +74,8 @@ src/
 Each layer exposes its public API through `index.ts`. dependency-cruiser enforces which layers
 may import which (see `.dependency-cruiser.cjs`), and CI fails on any violation.
 
-Conventions:
-
-- SI units throughout.
-- Right-handed coordinates with y up; the ground is the y = 0 plane.
-- Reversed-Z depth.
-- All lighting is computed in linear HDR, and sRGB encoding happens once, in the tone-map pass.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for how the layers fit together, the frame pipeline, state
+flow, the simulation contract and the rendering conventions.
 
 ## Browser support
 

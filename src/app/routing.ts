@@ -1,5 +1,6 @@
 import { defaultSimParams, parseSimParams, simIds, type SimId, type SimParamsFor } from '../schema';
 
+/** What the URL hash encodes. Scene and camera are deliberately left out. */
 export interface Route {
   sim: SimId;
   perf: boolean;

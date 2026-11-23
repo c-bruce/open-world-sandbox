@@ -4,6 +4,7 @@ import { SlotRing } from './ring';
 const MAX_PASSES = 8;
 const READBACK_SLOTS = 4;
 
+/** GPU milliseconds per pass label, e.g. `{ sim, shadow, main, tonemap }`. */
 export type PassTimings = Readonly<Record<string, number>>;
 
 /** Converts begin/end timestamp pairs (ns) to milliseconds per label. */

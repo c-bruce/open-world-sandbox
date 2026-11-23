@@ -4,11 +4,16 @@ import type { Vec3 } from './types';
 const NEAR = 0.05;
 const deg = Math.PI / 180;
 
+/** Orbit camera, structurally the same as `SceneParams['camera']`. */
 export interface OrbitCamera {
   target: { x: number; y: number; z: number };
+  /** Metres from the target. */
   distance: number;
+  /** Degrees; 0 looks along -z. */
   yaw: number;
+  /** Degrees above the target. */
   pitch: number;
+  /** Vertical field of view, degrees. */
   fov: number;
 }
 
